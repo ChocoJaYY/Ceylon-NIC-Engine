@@ -1,0 +1,11 @@
+{
+  "contents": [
+    {
+      "parts": [
+        {
+          "text": "Generate a random, authentic Sri Lankan male full name. The name must follow a traditional multi-component structure, typically including:\n\n1. A 'Ge' or \"Lage\" name (a traditional family, ancestral, or house name prefix).\n2. One or more male given names.\n3. A Sri Lankan surname.\n4. The name in Sinhala and Tamil text.\n\nFor example, a name like 'Vidanelage Upeksha Priyadarshani Ratnayake' or 'Hewagamage Tharushi Kumari Dissanayake' demonstrates the desired structure and level of detail.\n\nAnd the format matches:\n\n\"Vidanelage Upeksha Priyadarshani Ratnayake\"\n\"විදානෙලාගේ උපේක්ශා ප්‍රියදර්ශණී රත්නායක\"\n\"விதானெலவின் உபேக்ஷா பிரியதர்ஷனி ரத்நாயக்க\"\n\n\"Senanayake Mudiyansalage Himasha Madushani Wijesinghe\"\n\"සේනානායක මුදියන්සේලාගේ හිමාෂා මදුෂානි විජේසිංහ\"\n\"சேனநாயக்க முதியன்சேலாகே ஹிமாஷா மதுஷானி விஜேசிங்க\"\n\nYour response must consist of *only* the generated full name. Do not include any surrounding text, explanations, labels, or introductory phrases"
+        }
+      ]
+    }
+  ]
+}

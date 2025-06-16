@@ -1,0 +1,7 @@
+flask
+python-dotenv
+requests
+pdf417gen
+Pillow
+python-dateutil
+pdf417
