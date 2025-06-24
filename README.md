@@ -16,7 +16,7 @@
 
 ## 🚀 What is this?
 
-**Ceylon NIC Engine** is a web app that lets you generate **fake but realistic** Sri Lankan National ID Cards (NICs) for fun, learning, and testing.
+**Ceylon NIC Engine** is a web app that lets you generate **fake but realistic** Sri Lankan National ID Card data (NICs) for fun, learning, and testing.
 
 It combines:
 - 🎲 Random Sinhala names
@@ -96,11 +96,13 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 
 **🆔 Sample NIC Output with Portrait and Barcode**
 
-![Sample Portrait](https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/portrait.jpg)  
-*AI-generated sample portrait*
+<p align="center">
+  <img src="https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/portrait.jpg" alt="generated sample portrait" width="150"/>
+</p>
 
-![Sample Barcode](https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/barcode.png)  
-*Generated PDF417 NIC barcode*
+<p align="center">
+  <img src="https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/barcode.png" alt="NIC barcode preview" width="150"/>
+</p>
 
 > 📌 **The PDF417 barcode is 100% encoded with the exact generated data for the fake identity.**  
 > If someone scans the barcode, the data on the front side of the ID card will match the decoded barcode content **exactly**.
@@ -125,7 +127,8 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 > 🚧 Future Features & Fixes in the Works:
 
 - [ ] 🔥 Switch to **Gunicorn** instead of Flask dev server
-- [ ] 🛡️ Fix **directory traversal security issue**
+- [ ] ♻️ Add a way to restore previous generations. (Maybe a admin panel or IDK)
+- [ ] 🛡️ Fix **directory traversal security issue** (PLEASE NEVER DEPLOY THIS PUBLICLY. If you did so good luck)
 - [ ] 🌐 Add **Tamil & Muslim person generation** (random or selectable)
 - [ ] 🕒 **NIC History View** – track previously generated NICs
 - [ ] ❌ Retry & better **error handling** for Gemini/API failures
@@ -133,7 +136,6 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 - [ ] 🎛️ Add **Advanced Generation Mode** (e.g. user defines skin tone, hair, background)
 - [ ] 🚷 Prevent **external API abuse** (rate limits, tokens, CAPTCHA)
 - [ ] 📁 Organize & sandbox file handling
-- [ ] 🧪 Add **tests and CI**
 
 ---
 
@@ -144,10 +146,10 @@ If you enjoy this project:
 - ⭐ Star it
 - 🐛 Report bugs
 - 🧠 Suggest ideas
-- 🔥 Fork it and go wild
+- 🔥 Fork it and go wild to makes me motivate to maintain, make new projects like these. 🧡
 
 <p align="center">
-  Made with 🧡 for Sri Lanka 🇱🇰<br>
+  Made with 🧡 for Sri Lankans 🇱🇰<br>
   by <a href="https://github.com/ChocoJaYY">@ChocoJaYY</a>
 </p>
 
