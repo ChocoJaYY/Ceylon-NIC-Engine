@@ -84,9 +84,70 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 
 ---
 
+---
+
 ## 🚀 Getting Started
 
-#
+### 🔧 Requirements
+
+- Python 3.8+
+- Go (for the NIC generator microservice) Download GoLang from [here](https://go.dev/dl/)
+- Gemini API Key from [Google AI Studio](https://aistudio.google.com/)
+
+### 🔑 Get Your Gemini API Key
+
+1. Go to [https://aistudio.google.com/](https://aistudio.google.com/)
+2. Sign in with your Google account.
+3. Click your profile pic (top right) → **API Keys**
+4. Click **Create API Key** and copy it.
+
+Create a `.env` file in the root folder and paste this:
+
+```env
+GEMINI_API_KEY=your_google_gemini_api_key
+```
+Replace "your_google_gemini_api_key" with your actual API Key. And KEEP YOUR KEY SAFE.
+
+---
+
+### 💻 Installation
+
+```bash
+git clone https://github.com/ChocoJaYY/Ceylon-NIC-Engine.git
+cd Ceylon-NIC-Engine
+python3 -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+---
+
+### ⚙️ Build Go Backend (Optional)
+
+> Make sure you have Go installed and in your PATH.
+
+For Linux/macOS:
+```bash
+cd gendata
+bash build_all.sh
+```
+
+For Windows:
+```powershell
+cd gendata
+.uild_all.ps1
+```
+
+---
+
+### 🧪 Run the App
+```bash
+source venv/bin/activate
+python run.py
+```
+
+
+Then visit 👉 [http://localhost:5000](http://localhost:5000)
 
 ---
 
@@ -129,6 +190,7 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 - [ ] 🔥 Switch to **Gunicorn** instead of Flask dev server
 - [ ] ♻️ Add a way to restore previous generations. (Maybe a admin panel or IDK)
 - [ ] 🛡️ Fix **directory traversal security issue** (PLEASE NEVER DEPLOY THIS PUBLICLY. If you did so good luck)
+- [ ] 🌍 Migrating all Gemini requests to requests instead of curl
 - [ ] 🌐 Add **Tamil & Muslim person generation** (random or selectable)
 - [ ] 🕒 **NIC History View** – track previously generated NICs
 - [ ] ❌ Retry & better **error handling** for Gemini/API failures
@@ -136,6 +198,7 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 - [ ] 🎛️ Add **Advanced Generation Mode** (e.g. user defines skin tone, hair, background)
 - [ ] 🚷 Prevent **external API abuse** (rate limits, tokens, CAPTCHA)
 - [ ] 📁 Organize & sandbox file handling
+- [ ] 👤 Add Local Mode and Public Mode. (**Public mode** If youre exposing this to public internet. More on later.)
 
 ---
 
