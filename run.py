@@ -316,7 +316,7 @@ def generate_image():
 
     curl_command = [
         'curl', '-s', '-X', 'POST',
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=AIzaSyCKqaVRk5ajOZFHNBAMzZ8tNj5kSoK0i8c',
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key={api_key}',
         '-H', 'Content-Type: application/json',
         '-d', f'{{"contents": [{{"parts": [{{"text": "{prompt}"}}]}}], "generationConfig":{{"responseModalities":["TEXT","IMAGE"]}}}}'
     ]
