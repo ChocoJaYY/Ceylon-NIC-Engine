@@ -304,6 +304,7 @@ def generate_image():
     cloth = random.choice(male_cloths if sex == 'male' else female_cloths)
     expression = random.choice(facial_expressions)
     color = random.choice(backdrop_colors)
+    GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
     prompt = (
         f"A photorealistic portrait of a Sri Lankan {age} year old {sex} with a {skin_tone} skin tone "
@@ -316,7 +317,7 @@ def generate_image():
 
     curl_command = [
         'curl', '-s', '-X', 'POST',
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key={api_key}',
+        f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key={GEMINI_KEY}',
         '-H', 'Content-Type: application/json',
         '-d', f'{{"contents": [{{"parts": [{{"text": "{prompt}"}}]}}], "generationConfig":{{"responseModalities":["TEXT","IMAGE"]}}}}'
     ]
