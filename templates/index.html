@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ceylon NIC Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen px-4 py-10">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-4xl font-bold text-orange-400 mb-8 text-center">Ceylon NIC Generator</h1>
+
+    <div class="bg-gray-800/60 backdrop-blur-lg border border-orange-500 p-8 rounded-3xl shadow-2xl">
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label for="sex" class="block text-sm mb-2">Sex</label>
+          <select id="sex" class="w-full p-3 rounded-lg bg-gray-700 border border-orange-400">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="year" class="block text-sm mb-2">Year</label>
+          <select id="year" class="w-full p-3 rounded-lg bg-gray-700 border border-orange-400">
+            <option value="random" selected>Random</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="month" class="block text-sm mb-2">Month</label>
+          <select id="month" class="w-full p-3 rounded-lg bg-gray-700 border border-orange-400">
+            <option value="random" selected>Random</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="day" class="block text-sm mb-2">Day</label>
+          <select id="day" class="w-full p-3 rounded-lg bg-gray-700 border border-orange-400">
+            <option value="random" selected>Random</option>
+          </select>
+        </div>
+
+        <div class="col-span-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="generate-photo" class="w-4 h-4" checked />
+            <span>Generate Portrait Photo</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-4 mt-8">
+        <button onclick="generateNIC()" class="bg-orange-600 hover:bg-orange-700 px-5 py-2 rounded-lg font-semibold transition">
+          Generate NIC
+        </button>
+        <button onclick="regenerateImage()" class="bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-lg font-semibold transition">
+          Regenerate Image
+        </button>
+        <button onclick="saveAll()" class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg font-semibold transition">
+          Save All
+        </button>
+        <button onclick="downloadZip()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-semibold transition">
+          Download ZIP
+        </button>
+      </div>
+
+      <div id="loading" class="mt-6 hidden text-orange-300 text-center">
+        <svg class="animate-spin mx-auto h-6 w-6 mb-2 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        Generating...
+      </div>
+
+      <div id="results" class="hidden mt-8">
+        <div class="bg-gray-700 p-6 rounded-2xl shadow-lg">
+          <h2 class="text-2xl font-semibold mb-4 text-orange-300">📋 NIC Details</h2>
+          <div class="grid sm:grid-cols-1 gap-4 text-sm text-center">
+			<div><strong class="text-2xl font-bold text-orange-300">NIC:</strong> <span id="res-nnic" class="text-2xl font-bold text-white"></span></div>
+            <div><br></div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (Sinhala):</strong> <span id="res-name-si" class="text-2xl font-bold text-white"></span></div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (English):</strong> <span id="res-name-en" class="text-2xl font-bold text-white"></span></div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (Tamil):</strong> <span id="res-name-ta" class="text-2xl font-bold text-white"></span></div>
+            <br>
+            <div><strong>Old NIC:</strong> <span id="res-onic"></span></div>
+            <div><strong>DOB:</strong> <span id="res-dob"></span></div>
+            <div><strong>Sex:</strong> <span id="res-sex"></span></div>
+            <div><strong>SN:</strong> <span id="res-sn"></span></div>
+            <div><strong>Age:</strong> <span id="res-age"></span></div>
+            <div><strong>Province:</strong> <span id="res-province"></span></div>
+            <div><strong>Province No.:</strong> <span id="res-province-num"></span></div>
+            <div><strong>Address:</strong> <span id="res-address"></span></div>
+          </div>
+          <div class="mt-6 text-center">
+            <div id="portrait-wrapper" class="w-36 h-48 relative inline-block">
+              <dotlottie-player
+                id="portrait-loading"
+                src="https://lottie.host/866d4911-646f-419b-bc84-68bb56fe4b07/TDMdRXCvlv.lottie"
+                background="transparent"
+                speed="1"
+                style="width: 100%; height: 100%;"
+                loop
+                autoplay
+              ></dotlottie-player>
+              <img id="portrait" class="w-36 h-48 object-cover rounded-xl shadow-lg absolute top-0 left-0 hidden" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg hidden transition">
+      Saved Successfully!
+    </div>
+  </div>
+
+  <script>
+    const yearSelect = document.getElementById('year');
+    const monthSelect = document.getElementById('month');
+    const daySelect = document.getElementById('day');
+
+    for (let y = 1960; y <= new Date().getFullYear(); y++) {
+      yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+    for (let m = 1; m <= 12; m++) {
+      monthSelect.innerHTML += `<option value="${m}">${m}</option>`;
+    }
+    for (let d = 1; d <= 31; d++) {
+      daySelect.innerHTML += `<option value="${d}">${d}</option>`;
+    }
+
+    let lastImageBase64 = null;
+
+    function showLoading(state) {
+      document.getElementById('loading').classList.toggle('hidden', !state);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+
+    async function generateNIC() {
+      showLoading(true);
+      let sex = document.getElementById('sex').value;
+      let year = document.getElementById('year').value;
+      let month = document.getElementById('month').value;
+      let day = document.getElementById('day').value;
+      const genPhoto = document.getElementById('generate-photo').checked;
+
+      if (year === "random") year = Math.floor(Math.random() * (2009 - 1960 + 1)) + 1960;
+      else year = parseInt(year);
+      if (month === "random") month = Math.floor(Math.random() * 12) + 1;
+      else month = parseInt(month);
+      if (day === "random") day = Math.floor(Math.random() * 28) + 1;
+      else day = parseInt(day);
+
+      document.getElementById('year').value = year;
+      document.getElementById('month').value = month;
+      document.getElementById('day').value = day;
+
+      const res = await fetch('/generate-nic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sex, year, month, day })
+      });
+
+      if (!res.ok) {
+        showLoading(false);
+        return alert("Error generating NIC.");
+      }
+
+      const data = await res.json();
+
+      document.getElementById('results').classList.remove('hidden');
+      document.getElementById('res-nnic').innerText = data.nnic;
+      document.getElementById('res-onic').innerText = data.onic;
+      document.getElementById('res-dob').innerText = data.date;
+      document.getElementById('res-sex').innerText = data.sex;
+      document.getElementById('res-sn').innerText = `New: ${data.sn.new}, Old: ${data.sn.old}`;
+      document.getElementById('res-age').innerText = `${data.age.years}y ${data.age.months}m ${data.age.days}d`;
+      document.getElementById('res-province').innerText = data.province.name;
+      document.getElementById('res-province-num').innerText = data.province.number;
+      document.getElementById('res-address').innerText = data.address;
+      document.getElementById('res-name-en').innerText = data.name.english;
+      document.getElementById('res-name-si').innerText = data.name.sinhala;
+      document.getElementById('res-name-ta').innerText = data.name.tamil;
+
+      if (genPhoto) await regenerateImage();
+
+      showLoading(false);
+    }
+
+    async function regenerateImage() {
+      const portrait = document.getElementById('portrait');
+      const loadingAnim = document.getElementById('portrait-loading');
+
+      loadingAnim.classList.remove('hidden');
+      portrait.classList.add('hidden');
+
+      const sex = document.getElementById('sex').value;
+      const ageText = document.getElementById('res-age').innerText;
+      const years = parseInt(ageText.split('y')[0]);
+      const nic = document.getElementById('res-nnic').innerText;
+
+      const res = await fetch('/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sex, age: years, nic })
+      });
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      portrait.src = url;
+
+      const base64 = await blobToBase64(blob);
+      lastImageBase64 = base64;
+
+      portrait.onload = () => {
+        loadingAnim.classList.add('hidden');
+        portrait.classList.remove('hidden');
+      };
+    }
+
+    async function saveAll() {
+      const nic = document.getElementById('res-nnic').innerText;
+      if (!nic) return alert("Generate NIC first");
+      if (!lastImageBase64) return alert("No image to save");
+
+      await fetch('/save-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nic, image: lastImageBase64 })
+      });
+
+      showToast("Saved successfully.");
+    }
+
+    async function downloadZip() {
+      const nic = document.getElementById('res-nnic').innerText;
+      const now = new Date();
+      const timestamp = `${now.getHours()}${now.getMinutes()}${now.getSeconds()}-${now.getDate()}${now.getMonth() + 1}${now.getFullYear()}`;
+      window.location.href = `/download-zip?nic=${nic}&time=${timestamp}`;
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+  </script>
+</body>
+</html>
