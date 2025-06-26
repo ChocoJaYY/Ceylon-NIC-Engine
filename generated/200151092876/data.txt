@@ -1,0 +1,15 @@
+New NIC No.: 200151092876
+Old NIC No.: 
+DOB: 2001-01-10
+Sex: Female
+SN: New: 9287, Old: 
+Age: 24 years, 5 months, 16 days
+Province Name: Central Province
+Province Number: 2
+Name (English): "Bogahawatte Gedarage Anjali Nadeesha Rajapakse"
+Name (Sinhala): "බෝගහවත්තේ ගෙදරගේ අංජලී නදීෂා රාජපක්ෂ"
+Name (Tamil): "போகஹவத்தே கெதரகே அஞ்சலி நதீஷா ராஜபக்ஷ"
+Address: 14/A, Kandyan Reach Lane,
+Mahamaya Mawatha,
+Anniewatte,
+Kandy.
