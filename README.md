@@ -43,7 +43,7 @@ With a modern UI and super chill vibes 🌈
 ## 📸 Demo Preview
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/img/demo.png" alt="NIC Demo preview" width="600"/>
+  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/img/demoscreenshot.png" alt="NIC Demo preview" width="600"/>
 </p>
 
 ---
@@ -59,7 +59,7 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 - NIC Number
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/img/barcode.png" alt="Barcode Demo preview"/>
+  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/generated/200151092876/barcode.png" alt="Barcode Demo preview"/>
 </p>
 
 > 📌 The PDF417 barcode is 100% encoded with the exact generated data for the fake identity.  
@@ -158,11 +158,11 @@ Then visit 👉 [http://localhost:5000](http://localhost:5000)
 **🆔 Sample NIC Output with Portrait and Barcode**
 
 <p align="center">
-  <img src="https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/portrait.jpg" alt="generated sample portrait" width="150"/>
+  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/generated/200151092876/portrait.jpg" alt="generated sample portrait" width="150"/>
 </p>
 
 <p align="center">
-  <img src="https://github.com/ChocoJaYY/Ceylon-NIC-Engine/blob/main/img/barcode.png" alt="NIC barcode preview" width="150"/>
+  <img src="https://raw.githubusercontent.com/ChocoJaYY/Ceylon-NIC-Engine/refs/heads/main/generated/200151092876/barcode.png" alt="NIC barcode preview" width="150"/>
 </p>
 
 > 📌 **The PDF417 barcode is 100% encoded with the exact generated data for the fake identity.**  
