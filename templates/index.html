@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NIC Generator</title>
+  <title>Ceylon NIC Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script
-    src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs"
-    type="module"
-  ></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -18,11 +15,10 @@
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen px-4 py-10">
   <div class="max-w-5xl mx-auto">
-    <h1 class="text-4xl font-bold text-orange-400 mb-8 text-center">🆔 NIC Generator</h1>
+    <h1 class="text-4xl font-bold text-orange-400 mb-8 text-center">Ceylon NIC Generator</h1>
 
     <div class="bg-gray-800/60 backdrop-blur-lg border border-orange-500 p-8 rounded-3xl shadow-2xl">
       <div class="grid sm:grid-cols-2 gap-6">
-        <!-- Input Controls -->
         <div>
           <label for="sex" class="block text-sm mb-2">Sex</label>
           <select id="sex" class="w-full p-3 rounded-lg bg-gray-700 border border-orange-400">
@@ -60,7 +56,6 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex flex-wrap gap-4 mt-8">
         <button onclick="generateNIC()" class="bg-orange-600 hover:bg-orange-700 px-5 py-2 rounded-lg font-semibold transition">
           Generate NIC
@@ -76,7 +71,6 @@
         </button>
       </div>
 
-      <!-- Loading Indicator -->
       <div id="loading" class="mt-6 hidden text-orange-300 text-center">
         <svg class="animate-spin mx-auto h-6 w-6 mb-2 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -85,28 +79,15 @@
         Generating...
       </div>
 
-      <!-- Results -->
       <div id="results" class="hidden mt-8">
         <div class="bg-gray-700 p-6 rounded-2xl shadow-lg">
           <h2 class="text-2xl font-semibold mb-4 text-orange-300">📋 NIC Details</h2>
           <div class="grid sm:grid-cols-1 gap-4 text-sm text-center">
-            <div>
-              <strong style="font-size: 2em; font-weight: bold;">NIC:</strong> 
-              <span id="res-nnic" style="font-size: 2em; font-weight: bold;"></span>
-            </div>
+			<div><strong class="text-2xl font-bold text-orange-300">NIC:</strong> <span id="res-nnic" class="text-2xl font-bold text-white"></span></div>
             <div><br></div>
-            <div>
-              <strong style="font-size: 1.5em; font-weight: bold;">Name (Sinhala):</strong> 
-              <span id="res-name-si" style="font-size: 1.5em; font-weight: bold;"></span>
-            </div>
-            <div>
-              <strong style="font-size: 1.5em; font-weight: bold;">Name (English):</strong> 
-              <span id="res-name-en" style="font-size: 1.5em; font-weight: bold;"></span>
-            </div>
-            <div>
-              <strong style="font-size: 1.5em; font-weight: bold;">Name (Tamil):</strong> 
-              <span id="res-name-ta" style="font-size: 1.5em; font-weight: bold;"></span>
-            </div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (Sinhala):</strong> <span id="res-name-si" class="text-2xl font-bold text-white"></span></div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (English):</strong> <span id="res-name-en" class="text-2xl font-bold text-white"></span></div>
+			<div><strong class="text-2xl font-bold text-orange-300">Name (Tamil):</strong> <span id="res-name-ta" class="text-2xl font-bold text-white"></span></div>
             <br>
             <div><strong>Old NIC:</strong> <span id="res-onic"></span></div>
             <div><strong>DOB:</strong> <span id="res-dob"></span></div>
@@ -135,7 +116,6 @@
       </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-2 rounded-lg shadow-lg hidden transition">
       Saved Successfully!
     </div>
@@ -155,6 +135,8 @@
     for (let d = 1; d <= 31; d++) {
       daySelect.innerHTML += `<option value="${d}">${d}</option>`;
     }
+
+    let lastImageBase64 = null;
 
     function showLoading(state) {
       document.getElementById('loading').classList.toggle('hidden', !state);
@@ -240,6 +222,9 @@
       const url = URL.createObjectURL(blob);
       portrait.src = url;
 
+      const base64 = await blobToBase64(blob);
+      lastImageBase64 = base64;
+
       portrait.onload = () => {
         loadingAnim.classList.add('hidden');
         portrait.classList.remove('hidden');
@@ -248,15 +233,13 @@
 
     async function saveAll() {
       const nic = document.getElementById('res-nnic').innerText;
-      const img = document.getElementById('portrait').src;
       if (!nic) return alert("Generate NIC first");
-
-      const base64 = await fetch(img).then(r => r.blob()).then(blobToBase64);
+      if (!lastImageBase64) return alert("No image to save");
 
       await fetch('/save-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nic, image: base64 })
+        body: JSON.stringify({ nic, image: lastImageBase64 })
       });
 
       showToast("Saved successfully.");
