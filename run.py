@@ -18,6 +18,7 @@ from PIL import Image
 import atexit
 
 
+
 # Determine OS and architecture
 def get_system_info():
     os_name = platform.system().lower()
@@ -50,31 +51,21 @@ def start_nic_server():
     os_name, arch = get_system_info()
     binary_folder = 'bin'
     binary_name = binary_map.get((os_name, arch))
-    binary_path = os.path.join(binary_folder, binary_name) if binary_name else None
+    binary_path = resource_path(os.path.join(binary_folder, binary_name)) if binary_name else None
 
     if binary_path and os.path.isfile(binary_path):
-        # Make the binary executable on Linux/macOS
         if os_name in ('linux', 'darwin'):
             os.chmod(binary_path, 0o755)
-        # Start the binary
         creation_flags = subprocess.CREATE_NO_WINDOW if os_name == 'windows' else 0
         return subprocess.Popen([binary_path], creationflags=creation_flags)
     else:
-        # Fallback to running nic_generator.go if Go is installed
         if is_go_installed():
-            go_file = os.path.join('gendata', 'nic_generator.go')
+            go_file = resource_path(os.path.join('gendata', 'nic_generator.go'))
             if os.path.isfile(go_file):
-                # Run go run in the gendata directory
-                return subprocess.Popen(['go', 'run', 'nic_generator.go'], cwd='gendata')
-        # If no binary and no Go, raise an error
-        error_msg = (
-            "Can't find any matching binaries in the 'bin' folder for the system. "
-            "Please download binaries from Releases tab in GitHub or install Go in your "
-            "system to run this software from the source code (/gendata/nic_generator.go)"
-        )
-        print(error_msg)
+                return subprocess.Popen(['go', 'run', 'nic_generator.go'], cwd=resource_path('gendata'))
+        print("Can't find any matching NICServer binary.")
         sys.exit(1)
-
+        
 # Initialize the NIC server
 server_process = start_nic_server()
 
@@ -282,65 +273,81 @@ def generate_nic():
 
 @app.route('/generate-image', methods=['POST'])
 def generate_image():
-    
-    data = request.json
-    sex = data.get("sex")
-    age = data.get("age")
-    nic = data.get("nic")
+    try:
+        data = request.json
+        sex = data.get("sex")
+        age = data.get("age")
+        nic = data.get("nic")
 
-    if not sex or age is None:
-        return jsonify({"error": "Missing sex or age"}), 400
+        if not sex or age is None:
+            return jsonify({"error": "Missing sex or age"}), 400
 
-    skin_tones = ['fair', 'light brown', 'medium brown', 'dark brown', 'tan', 'olive']
-    male_hairstyles = ['short curly', 'buzz cut', 'faded sides', 'neatly combed', 'side-parted']
-    female_hairstyles = ['shoulder-length straight', 'tied back', 'long wavy', 'loose curls', 'sri lankan style', 'neatly pulled back']
-    male_cloths = ['T-shirt', 'Shirt', 'Polo Shirt', 'Sweater', 'Blazer', 'collared shirt']
-    female_cloths = ['T-shirt', 'Blouse', 'Top', 'Cardigan', 'Saree Blouse', 'Saree', 'collared shirt']
-    facial_expressions = ['neutral', 'natural', 'slight smile']
-    backdrop_colors = ['very light blue', 'white', 'off white']
-    
-    skin_tone = random.choice(skin_tones)
-    hair_style = random.choice(male_hairstyles if sex == 'male' else female_hairstyles)
-    cloth = random.choice(male_cloths if sex == 'male' else female_cloths)
-    expression = random.choice(facial_expressions)
-    color = random.choice(backdrop_colors)
-    GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+        skin_tones = ['fair', 'light brown', 'medium brown', 'dark brown', 'tan', 'olive']
+        male_hairstyles = ['short curly', 'buzz cut', 'faded sides', 'neatly combed', 'side-parted']
+        female_hairstyles = ['shoulder-length straight', 'tied back', 'long wavy', 'loose curls', 'sri lankan style', 'neatly pulled back']
+        male_cloths = ['T-shirt', 'Shirt', 'Polo Shirt', 'Sweater', 'Blazer', 'collared shirt']
+        female_cloths = ['T-shirt', 'Blouse', 'Top', 'Cardigan', 'Saree Blouse', 'Saree', 'collared shirt']
+        facial_expressions = ['neutral', 'natural', 'slight smile']
+        backdrop_colors = ['very light blue', 'white', 'off white']
 
-    prompt = (
-        f"A photorealistic portrait of a Sri Lankan {age} year old {sex} with a {skin_tone} skin tone "
-        f"and {hair_style} hairstyle. Both shoulders are clearly visible. The subject is wearing {cloth}. The face should be clearly visible with natural texture, showing subtle imperfections. "
-        f"The subject is facing straight ahead, with a {expression} expression. The background is a plain light {color} studio backdrop. The photo is in portrait orientation with a 7:9 aspect ratio, suitable for a driving license card. "
-        f"Use realistic lighting and photographic style, avoid outlines and white outlines. "
-        f"The framing should ensure that the subject's face occupies less than 30% of the image, with at least 90% of both shoulders visible and natural headroom. "
-        f"Apply the rule of thirds for composition. Avoid borders and white borders. The final image should resemble a professional photograph with appropriate spacing."
-    )
+        skin_tone = random.choice(skin_tones)
+        hair_style = random.choice(male_hairstyles if sex == 'male' else female_hairstyles)
+        cloth = random.choice(male_cloths if sex == 'male' else female_cloths)
+        expression = random.choice(facial_expressions)
+        color = random.choice(backdrop_colors)
+        GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
-    curl_command = [
-        'curl', '-s', '-X', 'POST',
-        f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key={GEMINI_KEY}',
-        '-H', 'Content-Type: application/json',
-        '-d', f'{{"contents": [{{"parts": [{{"text": "{prompt}"}}]}}], "generationConfig":{{"responseModalities":["TEXT","IMAGE"]}}}}'
-    ]
+        prompt = (
+            f"A photorealistic portrait of a Sri Lankan {age} year old {sex} with a {skin_tone} skin tone "
+            f"and {hair_style} hairstyle. Both shoulders are clearly visible. The subject is wearing {cloth}. "
+            f"The face should be clearly visible with natural texture, showing subtle imperfections. "
+            f"The subject is facing straight ahead, with a {expression} expression. "
+            f"The background is a plain light {color} studio backdrop. The photo is in portrait orientation with a 7:9 aspect ratio, "
+            f"suitable for a driving license card. Use realistic lighting and photographic style, avoid outlines and white outlines. "
+            f"The framing should ensure that the subject's face occupies less than 30% of the image, with at least 90% of both shoulders visible. "
+            f"Apply the rule of thirds for composition. Avoid borders. The final image should resemble a professional photograph."
+        )
 
-    result = subprocess.run(curl_command, capture_output=True, text=True)
-    match = re.search(r'"data": "([^"]*)"', result.stdout)
-    if not match:
-        return jsonify({"error": "No image found"}), 500
+        curl_command = [
+            'curl', '-s', '-X', 'POST',
+            f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key={GEMINI_KEY}',
+            '-H', 'Content-Type: application/json',
+            '-d', json.dumps({
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"responseModalities": ["TEXT", "IMAGE"]}
+            })
+        ]
 
-    image_data = base64.b64decode(match.group(1))
+        result = subprocess.run(curl_command, capture_output=True, text=True)
+        match = re.search(r'"data": "([^"]*)"', result.stdout)
 
-    os.makedirs("static/portrait", exist_ok=True)
-    temp_image_path = os.path.join("static", "portrait", "temp.jpg")
-    with open(temp_image_path, "wb") as f:
-        f.write(image_data)
+        if not match:
+            print("Curl failed or unexpected output:")
+            print(result.stdout)
+            return jsonify({"error": "No image found"}), 500
 
-    if nic:
-        nic_folder = os.path.join("generated", nic)
-        os.makedirs(nic_folder, exist_ok=True)
-        with open(os.path.join(nic_folder, "portrait.jpg"), "wb") as f:
+        image_data = base64.b64decode(match.group(1))
+
+        # Use app.root_path instead of resource_path for PyInstaller compatibility
+        portrait_dir = os.path.join(app.root_path, "static", "portrait")
+        os.makedirs(portrait_dir, exist_ok=True)
+        temp_image_path = os.path.join(portrait_dir, "temp.jpg")
+        with open(temp_image_path, "wb") as f:
             f.write(image_data)
 
-    return send_file(temp_image_path, mimetype='image/jpeg')
+        if nic:
+            generated_dir = os.path.join(app.root_path, "generated")
+            nic_folder = os.path.join(generated_dir, nic)
+            os.makedirs(nic_folder, exist_ok=True)
+            with open(os.path.join(nic_folder, "portrait.jpg"), "wb") as f:
+                f.write(image_data)
+
+        return send_file(temp_image_path, mimetype='image/jpeg')
+
+    except Exception as e:
+        print("generate-image error:", e)
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/save-data', methods=['POST'])
 def save_data():
@@ -356,7 +363,19 @@ def save_data():
             f.write(base64.b64decode(image_b64))
 
     return jsonify({"message": "Saved successfully"})
+    
+# For compiled apps
+def resource_path(relative_path):
+    """Get absolute path to resource (compatible with PyInstaller)"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Development: use current directory
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
+    
 @app.route('/download-zip')
 def download_zip():
     nic = request.args.get('nic')
