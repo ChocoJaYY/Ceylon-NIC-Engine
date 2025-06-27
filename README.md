@@ -70,16 +70,41 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 ## 📁 Project Structure
 
 ```
-├── run.py                  # Main Flask app
-├── requirements.txt        # Python dependencies
-├── templates/index.html    # HTML frontend
-├── static/portrait/        # Portrait image cache
-└── gendata/                # Go NIC generation server
-    ├── build_all.ps1
-    ├── build_all.sh
-    ├── nic_generator.go
-    ├── go.mod
-    └── go.sum
+Ceylon-NIC-Engine/
+├── run.py                      # Main Flask app entry point
+├── requirements.txt            # Python dependencies
+├── .env                        # Gemini API key (NOT version-controlled)
+├── LICENSE                     # MIT License
+├── templates/
+│   └── index.html              # Main HTML template
+├── static/
+│   └── portrait/
+│       └── temp.jpg            # Cached portrait image
+├── gendata/                    # Go microservice source (NIC generator)
+│   ├── build_all.ps1           # Build script for Windows
+│   ├── build_all.sh            # Build script for Linux/macOS
+│   ├── go.mod                  # Go module definition
+│   ├── go.sum                  # Go module checksums
+│   └── nic_generator.go        # Go source for NIC data logic
+├── bin/                        # Precompiled Go binaries
+│   ├── amd64_linux_NICServer
+│   ├── amd64_windows_NICServer.exe
+│   ├── amd64_darwin_NICServer
+│   ├── arm64_linux_NICServer
+│   └── arm64_darwin_NICServer
+├── generated/                  # Saved fake NIC generations
+│   └── 200151092876/
+│       ├── barcode.png
+│       ├── portrait.jpg
+│       └── data.txt
+├── downloads/                  # Exported NIC zip archives
+│   └── 200151092876-234045-2662025.zip
+├── logs/                       # Logs for debugging AI responses
+│   ├── last_name_response.json
+│   └── last_address_response.json
+├── img/                        # Assets for README/demo purposes
+│   ├── demoscreenshot.png
+│   └── Untitled-ASDs2.png
 ```
 
 ---
@@ -101,7 +126,7 @@ The PDF417 barcode is encoded with **the same exact data** as shown on the NIC:
 3. Click your profile pic (top right) → **API Keys**
 4. Click **Create API Key** and copy it.
 
-Create a `.env` file in the root folder and paste this:
+Create or update `.env` file in the root folder and paste/change this:
 
 ```env
 GEMINI_API_KEY=your_google_gemini_api_key
@@ -135,7 +160,7 @@ bash build_all.sh
 For Windows:
 ```powershell
 cd gendata
-.uild_all.ps1
+.build_all.ps1
 ```
 
 ---
