@@ -184,7 +184,7 @@ def generate_name(sex):
         f"Your response must consist of *only* the generated full name. Do not include any surrounding text, explanations, labels, or introductory phrases"
     )
 
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent"
     headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [
@@ -403,3 +403,4 @@ def download_zip():
 
 if __name__ == '__main__':
     app.run(debug=False)
+
